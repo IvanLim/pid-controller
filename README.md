@@ -40,6 +40,7 @@
 
 ## Reflections
 **PID Parameter Tuning approach**
+
 The parameters were tuned using the Twiddle algorithm. A simple rule of "stop and reset when the cross-track-error exceeds 0.8" was used, and the PID controller was left to run and tune on its own until that target was achieved. The final values of the PID parameters are as follows:
   * p: -1.4843
   * i: 0  

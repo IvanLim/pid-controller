@@ -39,11 +39,16 @@
 ---
 
 ## Reflections
+**PID Parameter Tuning approach**
+The parameters were tuned using the Twiddle algorithm. A simple rule of "stop and reset when the cross-track-error exceeds 0.8" was used, and the PID controller was left to run and tune on its own until that target was achieved. The final values of the PID parameters are as follows:
+  * p: -1.4843
+  * i: 0  
+  * d: -23.2394
 
 **Effects of PID parameters**
 * **P parameter**
   * The P parameter seemed to control the large, general corrections in vehicle movement. At the beginning, tuning this parameter gave the biggest gains.
 * **I parameter**
   * After twiddle, the I parameter settled at 0. Any attempt to increase/decrease this value resulted in the car making a hard turn in one direction. This is probably due to the fact that the simulator track was a simple one with little opportunity for systemic bias.
-* ** D parameter **
+* **D parameter**
   * The D parameter tended to affect how quickly the vehicle would respond to change. The higher the value, the faster the vehicle turned to correct itself.

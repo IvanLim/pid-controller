@@ -2,10 +2,6 @@
 #include <cmath>
 #include "PID.h"
 
-#define TOTAL_TWIDDLE_CYCLES 30
-#define TRAINING_CYCLES_PER_COEFFICIENT 1
-#define TWIDDLE_TOLERANCE 0.2
-
 PID::PID() {}
 
 PID::~PID() {}
@@ -19,6 +15,8 @@ void PID::Init(double Kp, double Ki, double Kd) {
     i_error = 0.0;
     d_error = 0.0;
 
+    // These are the tuning parameter values obtained after
+    // going through the twiddle tuning process
     dp = -0.147789;
     di = 0.00106112;
     dd = 2.95378;
@@ -61,31 +59,31 @@ void PID::TwiddleUpdate() {
 
     switch(twiddle_state) {
         case TwiddleState::stage_one:
-            // if twiddle_state == stage_one
-            //  best_error = cte
-            //  current_coefficient += current_modifier
-            //  move to the next train state stage_two
+            // This is a fresh run. Use the current err as the best_err
             twiddle_best_err = twiddle_err;
+
+            // ADD tuning parameter to our coefficient
             *current_twiddle_coefficient += *current_twiddle_tuning_parameter;
+
+            // Move on to next state, and wait for results
             twiddle_state = TwiddleState::stage_two;
             break;
 
         case TwiddleState::stage_two:
-            // if stage_two
-            //  if cte < best_error:
-            //   best_error = cte;
-            //   current modifier *= 1.1
-            //   move to next coefficient
-            //   move back to first train state stage_one
-            //  else
-            //   current coefficient -= 2 * current_modifier;
-            //   move to the next train state stage_three
+            // If the results are better than what we have
+            // Keep the results, increase our tuning parameter
+            // and move to the next twiddle coefficient
             if (twiddle_err < twiddle_best_err) {
                 twiddle_best_err = twiddle_err;
                 *current_twiddle_tuning_parameter *= 1.1;
                 MoveToNextTwiddleCoefficient();
             } else {
+                // Our previous results were better. 
+                // Undo our most recent change, and
+                // try the opposite direction (MINUS the tuning parameter)
                 *current_twiddle_coefficient -= 2 * *current_twiddle_tuning_parameter;
+
+                // Move on to next state and wait for results
                 twiddle_state = TwiddleState::stage_three;
             }            
             break;
@@ -100,13 +98,22 @@ void PID::TwiddleUpdate() {
             //     current_modifier *= 0.9
             //   move to next coefficient
             //   move back to first train state stage_one
+
+            // If the results are better than what we have
+            // Keep the results, increase our tuning parameter
             if (twiddle_err < twiddle_best_err) {
                 twiddle_best_err = twiddle_err;
                 *current_twiddle_tuning_parameter *= 1.1;
             } else {
+                // Our previous results were better, even after trying both directions.
+                // Undo our changes
                 *current_twiddle_coefficient += *current_twiddle_tuning_parameter;
+
+                // Reduce the tunning parameter for our next try
                 *current_twiddle_tuning_parameter *= 0.9;
             }
+
+            // Move on to the next coefficient and start again
             MoveToNextTwiddleCoefficient();
             break;
 

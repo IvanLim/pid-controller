@@ -78,7 +78,7 @@ int main()
 
             // Perform a reset and start the next iteration
             pid.twiddle_n = 0;
-            pid.twiddle_err = 0;
+            pid.twiddle_cumulative_err = 0;
             std::string msg = "42[\"reset\",{}]";
             ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);            
           }

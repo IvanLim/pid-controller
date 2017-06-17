@@ -30,26 +30,23 @@ public:
   double i_error;
   double d_error;
 
-  /*
-  * Coefficients
-  */ 
+  // PID Coefficients
   double Kp;
   double Ki;
   double Kd;
 
+  // Twiddle tuning parameters
   double dp;
   double di;
   double dd;
 
-  int twiddle_cycle_count;
-  
-  long twiddle_n;
-  double twiddle_cumulative_err;
-  double twiddle_best_err;
+  // Twiddle variables we need to track
+  long twiddle_n;                 // The length of a twiddle run
+  double twiddle_cumulative_err;  // The cumulative error of a twiddle run
+  double twiddle_best_err;        // The twiddle best error so far for a given coefficient/parameter
 
   double *current_twiddle_coefficient;
   double *current_twiddle_tuning_parameter;
-
 
 
   /*
@@ -77,11 +74,25 @@ public:
   */
   double TotalError();
 
+  /*
+  * Performs an update of the Twiddle parameters, used to tune our PID coefficients
+  */
   void TwiddleUpdate();
 
 private:
+  /* 
+    Returns a pointer to the current twiddle coefficient we're tuning
+  */
   double *GetCurrentTwiddleCoefficient();
+
+  /* 
+    Returns a pointer to the current twiddle tuning parameter
+  */
   double *GetCurrentTwiddleTuningParameter();
+
+  /* 
+    Moves on to the next Twiddle coefficient
+  */
   void MoveToNextTwiddleCoefficient();
 
 };

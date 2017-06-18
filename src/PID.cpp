@@ -89,16 +89,6 @@ void PID::TwiddleUpdate() {
             break;
 
         case TwiddleState::stage_three:
-            // if stage_three:
-            //   if cte < best_error:
-            //     best_error = cte;
-            //     current_modifier *= 1.1
-            //   else:
-            //     current_coefficient += current modifier
-            //     current_modifier *= 0.9
-            //   move to next coefficient
-            //   move back to first train state stage_one
-
             // If the results are better than what we have
             // Keep the results, increase our tuning parameter
             if (twiddle_err < twiddle_best_err) {

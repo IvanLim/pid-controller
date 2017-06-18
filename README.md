@@ -1,5 +1,11 @@
-# CarND-Controls-PID
-Self-Driving Car Engineer Nanodegree Program
+# PID Controller Project
+
+## The goals / steps of this project are the following:
+
+- Implement a PID controller
+- Tune the PID coefficients (using twiddle)
+- Get the car to run around the track in the [Udacity simulator](https://github.com/udacity/self-driving-car-sim/releases)
+- Summarize the results into this written report
 
 ---
 
@@ -23,68 +29,27 @@ Self-Driving Car Engineer Nanodegree Program
     cd uWebSockets
     git checkout e94b6e1
     ```
-    Some function signatures have changed in v0.14.x. See [this PR](https://github.com/udacity/CarND-MPC-Project/pull/3) for more details.
-* Simulator. You can download these from the [project intro page](https://github.com/udacity/self-driving-car-sim/releases) in the classroom.
-
 ## Basic Build Instructions
 
 1. Clone this repo.
 2. Make a build directory: `mkdir build && cd build`
 3. Compile: `cmake .. && make`
-4. Run it: `./pid`. 
+4. Run it: `./pid`.
 
-## Editor Settings
+---
 
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
+## Reflections
+**PID Parameter Tuning approach**
 
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
+The parameters were tuned using the Twiddle algorithm. A simple rule of "stop and reset when the cross-track-error exceeds 0.8" was used, and the PID controller was left to run and tune on its own until that target was achieved. The final values of the PID parameters are as follows:
+  * p: -1.4843
+  * i: 0  
+  * d: -23.2394
 
-## Code Style
-
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
-
-## Project Instructions and Rubric
-
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
-
-More information is only accessible by people who are already enrolled in Term 2
-of CarND. If you are enrolled, see [the project page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/f1820894-8322-4bb3-81aa-b26b3c6dcbaf/lessons/e8235395-22dd-4b87-88e0-d108c5e5bbf4/concepts/6a4d8d42-6a04-4aa6-b284-1697c0fd6562)
-for instructions and the project rubric.
-
-## Hints!
-
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
-
-## Call for IDE Profiles Pull Requests
-
-Help your fellow students!
-
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to we ensure
-that students don't feel pressured to use one IDE or another.
-
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
-
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
-
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
-
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
-
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
+**Effects of PID parameters**
+* **P parameter**
+  * The P parameter seemed to control the large, general corrections in vehicle movement. At the beginning, tuning this parameter gave the biggest gains.
+* **I parameter**
+  * After twiddle, the I parameter settled at 0. Any attempt to increase/decrease this value resulted in the car making a hard turn in one direction. This is probably due to the fact that the simulator track was a simple one with little opportunity for systemic bias.
+* **D parameter**
+  * The D parameter tended to affect how quickly the vehicle would respond to change. The higher the value, the faster the vehicle turned to correct itself.
